@@ -41,7 +41,7 @@ jobs:
       - name: Setup Deno 🚀
         uses: denoland/setup-deno@main
         with:
-          deno-version: '2.3.0'
+          deno-version: "1.9.0"
       - name: Download dependencies 🚀
         if: steps.check_files.outcome == 'success'
         run: deno run --allow-net --allow-read --allow-write ./main.ts
