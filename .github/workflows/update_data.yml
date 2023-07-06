@@ -1,0 +1,88 @@
+name: update_data
+on:
+  workflow_dispatch:
+    inputs:
+      timeoutStr:
+        description: 'Timeout duration'
+        required: false
+        default: '30'
+      deleteDataLog:
+        description: 'Delete data and log folders'
+        required: false
+        default: 'false'
+  schedule:
+    - cron: '00 16 * * *'
+env:
+  RELEASE: ${{secrets.RELEASE}}
+  UPLOAD: ${{secrets.UPLOAD}}
+jobs:
+  socialgirls:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup timezone 🚀
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Asia/Shanghai
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Set environment variable and delete .env file if needed 🚀
+        env:
+          timeoutStr: ${{ inputs.timeoutStr }}
+          deleteDataLog: ${{ inputs.deleteDataLog }}
+        run: |
+          echo "timeoutStr: ${timeoutStr}"
+          echo "deleteDataLog: ${deleteDataLog}"
+          if [[ -n "${timeoutStr}" ]]; then
+            rm .env
+            echo "timeoutStr=${timeoutStr}" >> .env
+          elif [[ -f .env ]]; then
+            rm .env
+          else
+            timeoutStr='300'
+            rm .env
+            echo "Using default timeoutStr: ${timeoutStr}"
+            echo "timeoutStr=${timeoutStr}" >> .env
+          fi
+
+          if [[ "${deleteDataLog}" == "true" ]]; then
+            rm -rf data
+            rm -rf log
+          fi
+      - name: Setup Deno 🚀
+        uses: denoland/setup-deno
+        with:
+          deno-version: '2.3.0'
+      - name: Download dependencies 🚀
+        if: steps.check_files.outcome == 'success'
+        run: deno run --allow-net --allow-read --allow-write ./main.ts
+      - name: Commit files 🚀
+        run: |
+          git add data log
+          git config --local user.email "h7ml@qq.com"
+          git config --local user.name "h7ml"
+          git commit --allow-empty -m ":rocket: Update today's 7fenglou on $(date)"
+      - name: Upload  🚀
+        uses: actions/upload-artifact@v2
+        with:
+          name: socialgirls
+          path: data
+        if: steps.check_files.outcome == 'success'
+      - name: release 🚀
+        uses: elgohr/Github-Release-Action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          RELEASE: ${{secrets.RELEASE}}
+        with:
+          title: ${{ github.sha }}
+        if: steps.check_files.outcome == 'success' && env.RELEASE == 'true'
+      - name: Push changes 🚀
+        uses: ad-m/github-push-action@master
+        env:
+          UPLOAD: ${{secrets.UPLOAD}}
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: ${{ github.ref }}
+        if: steps.check_files.outcome == 'success' && env.UPLOAD== 'true'
