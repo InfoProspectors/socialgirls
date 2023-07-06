@@ -24,7 +24,7 @@ jobs:
         with:
           timezone: Asia/Shanghai
       - name: checkout 🚀
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         with:
           ref: deno
           persist-credentials: false
@@ -39,7 +39,7 @@ jobs:
             rm -rf log
           fi
       - name: Setup Deno 🚀
-        uses: denoland/setup-deno
+        uses: denoland/setup-deno@main
         with:
           deno-version: '2.3.0'
       - name: Download dependencies 🚀
