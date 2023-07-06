@@ -16,7 +16,7 @@ env:
   RELEASE: ${{secrets.RELEASE}}
   UPLOAD: ${{secrets.UPLOAD}}
 jobs:
-  socialgirls:
+  update_data:
     runs-on: ubuntu-latest
     steps:
       - name: Setup timezone 🚀
@@ -25,7 +25,7 @@ jobs:
           timezone: Asia/Shanghai
       - uses: actions/checkout@v2
         with:
-          ref: main
+          ref: deno
           persist-credentials: false
           fetch-depth: 0
       - name: Set environment variable and delete .env file if needed 🚀
