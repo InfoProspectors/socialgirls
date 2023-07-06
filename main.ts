@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DOMParser } from 'https://deno.land/x/deno_dom/deno-dom-wasm.ts';
 import { join, parse } from 'https://deno.land/std/path/mod.ts';
 import { ensureDirSync } from 'https://deno.land/std/fs/mod.ts';

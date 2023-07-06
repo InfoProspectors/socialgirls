@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "useUnknownInCatchVariables": true,
+    "noImplicitOverride": true
+  },
+  "imports": {
+    "https://deno.land/std@$STD_VERSION/": "./"
+  },
+  "tasks": {
+    "lint": "deno lint",
+    "start": "deno run --allow-net --allow-read --allow-write ./main.ts"
+  },
+  "exclude": [
+    ".git",
+    "crypto/_wasm/target",
+    "cov",
+    "jsonc/testdata",
+    "front_matter/testdata",
+    "wasi/testdata"
+  ]
+}
